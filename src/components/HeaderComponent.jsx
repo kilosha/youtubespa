@@ -25,17 +25,19 @@ const HeaderComponent = () => {
                 zIndex: 1,
                 width: '100%',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                borderBottom: '1px solid rgba(5, 5, 5, 0.06)'
             }}>
             <img src={slideImg1} />
             <Menu
                 //theme="light"
                 mode="horizontal"
-                defaultSelectedKeys={['2']}
+                defaultSelectedKeys={['Search']}
                 items={items}
                 style={{
                     flex: 1,
-                    minWidth: 0
+                    minWidth: 0,
+                    borderBottom: '0px solid rgba(5, 5, 5, 0.06)'
                 }}
             />
             <Link to="/login">

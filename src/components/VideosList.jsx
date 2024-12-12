@@ -1,7 +1,8 @@
 import { List, Image } from 'antd';
 import React, { useState } from 'react';
+import { Skeleton } from 'antd';
 
-const VideosList = ({ data }) => {
+const VideosList = ({ data, loading }) => {
     //const [items, setItems] = useState(data);
     return (
         <div>
@@ -9,7 +10,20 @@ const VideosList = ({ data }) => {
                 dataSource={data}
                 renderItem={(item) => (
                     <List.Item>
-                        <List.Item.Meta
+                        <Skeleton loading={loading} active avatar>
+                            <List.Item.Meta
+                                avatar={<Image src={item.picture} width={200} />}
+                                title={
+                                    <a
+                                        href={`https://www.youtube.com/watch?v=${item.id}`}
+                                        target="_blank">
+                                        {item.title}
+                                    </a>
+                                }
+                                description={item.description}
+                            />
+                        </Skeleton>
+                        {/* <List.Item.Meta
                             avatar={<Image src={item.picture} width={200} />}
                             title={
                                 <a
@@ -19,7 +33,7 @@ const VideosList = ({ data }) => {
                                 </a>
                             }
                             description={item.description}
-                        />
+                        /> */}
                     </List.Item>
                 )}
             />

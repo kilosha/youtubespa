@@ -7,7 +7,7 @@ import HeaderComponent from '../components/HeaderComponent';
 
 const MainLayout = () => {
     return (
-        <div>
+        <div className="mainLayout">
             <Layout
                 style={{
                     position: 'sticky',

@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router';
-import { Button } from 'antd';
+import { Typography } from 'antd';
+import LoginForm from '../components/LoginForm';
 
 const LoginPage = () => {
     return (
-        <div>
-            <Link to="/">
-                <Button type="link">Войти</Button>
-            </Link>
+        <div className="loginPageContent">
+            <Typography.Title level={3} className="headerTitle">
+                Welcome!
+            </Typography.Title>
+            <LoginForm />
         </div>
     );
 };

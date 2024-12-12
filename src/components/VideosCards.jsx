@@ -3,8 +3,10 @@ const { Meta } = Card;
 
 const VideosCards = ({ data }) => {
     const gridStyle = {
-        width: '25%',
-        textAlign: 'center'
+        // width: '35%',
+        // margin: '10px',
+        textAlign: 'center',
+        overflow: 'hidden'
     };
 
     return (
@@ -13,11 +15,7 @@ const VideosCards = ({ data }) => {
                 {data.map((item) => {
                     return (
                         <Card.Grid style={gridStyle} key={item.id}>
-                            <Card
-                                // style={{
-                                //     width: 300
-                                // }}
-                                cover={<img alt="example" src={item.picture} />}>
+                            <Card cover={<img alt="example" src={item.picture} />}>
                                 <Meta
                                     title={
                                         <a

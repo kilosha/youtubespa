@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, Input, Modal, Slider } from 'antd';
 import { Col, InputNumber, Row } from 'antd';
 
-const FavoritesModal = ({ isModalOpen, setIsModalOpen }) => {
+const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
     const [form] = Form.useForm();
     const [formValues, setFormValues] = useState();
     const [open, setOpen] = useState(false);
@@ -25,10 +25,18 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen }) => {
     const onChange = (newValue) => {
         setInputValue(newValue);
     };
+
+    React.useEffect(() => {
+        if (isModalOpen) {
+            form.setFieldsValue({ requestText: requestText });
+        }
+    }, [isModalOpen]);
+
     return (
         <>
             <Modal
                 open={isModalOpen}
+                forceRender
                 // onOk={handleOk}
                 // onCancel={handleCancel}
                 title="Сохранить запрос"
@@ -45,16 +53,13 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen }) => {
                         layout="vertical"
                         form={form}
                         name="form_in_modal"
-                        initialValues={{
-                            modifier: 'public'
-                        }}
                         clearOnDestroy
                         onFinish={(values) => onCreate(values)}>
                         {dom}
                     </Form>
                 )}>
-                <Form.Item name="description" label="Запрос">
-                    <Input />
+                <Form.Item name="requestText" label="Запрос">
+                    <Input disabled />
                 </Form.Item>
                 <Form.Item
                     name="title"

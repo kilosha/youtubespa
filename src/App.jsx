@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 
 function App() {
     return (
-        <>
+        <div className="App">
             <Routes>
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<MainPage />} />
@@ -19,7 +19,7 @@ function App() {
 
             {/* <MainPage /> */}
             {/* <FavoritesPage /> */}
-        </>
+        </div>
     );
 }
 
