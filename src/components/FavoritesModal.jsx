@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Modal, Slider } from 'antd';
 import { Col, InputNumber, Row } from 'antd';
+import axios from 'axios';
 
 const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
     const [form] = Form.useForm();
@@ -8,14 +9,42 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
     const [open, setOpen] = useState(false);
     const onCreate = (values) => {
         console.log('Received values of form: ', values);
-        setFormValues(values);
-        setOpen(false);
+
+        const token = localStorage.getItem('token');
+        axios
+            .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, values, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(function (response) {
+                console.log(response.data);
+                // localStorage.setItem('token', response.data.token);
+                // navigate('/');
+                setIsModalOpen(false);
+            })
+            .catch((e) => {
+                alert(e?.response?.data?.message);
+            });
+
+        // setFormValues(values);
+        // setOpen(false);
     };
     // const showModal = () => {
     //     setIsModalOpen(true);
     // };
     const handleOk = () => {
         setIsModalOpen(false);
+
+        const token = localStorage.getItem('token');
+        axios
+            .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, { values, token })
+            .then(function (response) {
+                console.log(response.data);
+                // localStorage.setItem('token', response.data.token);
+                // navigate('/');
+            })
+            .catch((e) => {
+                alert(e?.response?.data?.message);
+            });
     };
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -37,7 +66,7 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
             <Modal
                 open={isModalOpen}
                 forceRender
-                // onOk={handleOk}
+                //onOk={handleOk}
                 // onCancel={handleCancel}
                 title="Сохранить запрос"
                 okText="Сохранить"
