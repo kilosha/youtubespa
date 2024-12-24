@@ -3,7 +3,14 @@ import { Button, Form, Input, Modal, Slider } from 'antd';
 import { Col, InputNumber, Row } from 'antd';
 import axios from 'axios';
 
-const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
+const FavoritesModal = ({
+    isModalOpen,
+    setIsModalOpen,
+    requestText,
+    isEditMode,
+    favItem,
+    getItems
+}) => {
     const [form] = Form.useForm();
     const [formValues, setFormValues] = useState();
     const [open, setOpen] = useState(false);
@@ -11,19 +18,41 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
         console.log('Received values of form: ', values);
 
         const token = localStorage.getItem('token');
-        axios
-            .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, values, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            .then(function (response) {
-                console.log(response.data);
-                // localStorage.setItem('token', response.data.token);
-                // navigate('/');
-                setIsModalOpen(false);
-            })
-            .catch((e) => {
-                alert(e?.response?.data?.message);
-            });
+
+        if (isEditMode) {
+            axios
+                .patch(
+                    `${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites/${favItem._id}`,
+                    values,
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }
+                )
+                .then(function (response) {
+                    console.log(response.data);
+                    // localStorage.setItem('token', response.data.token);
+                    // navigate('/');
+                    setIsModalOpen(false);
+                    getItems();
+                })
+                .catch((e) => {
+                    alert(e?.response?.data?.message);
+                });
+        } else {
+            axios
+                .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, values, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then(function (response) {
+                    console.log(response.data);
+                    // localStorage.setItem('token', response.data.token);
+                    // navigate('/');
+                    setIsModalOpen(false);
+                })
+                .catch((e) => {
+                    alert(e?.response?.data?.message);
+                });
+        }
 
         // setFormValues(values);
         // setOpen(false);
@@ -31,24 +60,25 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
     // const showModal = () => {
     //     setIsModalOpen(true);
     // };
-    const handleOk = () => {
-        setIsModalOpen(false);
+    // const handleOk = () => {
+    //     setIsModalOpen(false);
 
-        const token = localStorage.getItem('token');
-        axios
-            .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, { values, token })
-            .then(function (response) {
-                console.log(response.data);
-                // localStorage.setItem('token', response.data.token);
-                // navigate('/');
-            })
-            .catch((e) => {
-                alert(e?.response?.data?.message);
-            });
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+    //     const token = localStorage.getItem('token');
+
+    //     axios
+    //         .post(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/favorites`, { values, token })
+    //         .then(function (response) {
+    //             console.log(response.data);
+    //             // localStorage.setItem('token', response.data.token);
+    //             // navigate('/');
+    //         })
+    //         .catch((e) => {
+    //             alert(e?.response?.data?.message);
+    //         });
+    // };
+    // const handleCancel = () => {
+    //     setIsModalOpen(false);
+    // };
 
     const [inputValue, setInputValue] = useState(25);
     const onChange = (newValue) => {
@@ -57,7 +87,12 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
 
     React.useEffect(() => {
         if (isModalOpen) {
-            form.setFieldsValue({ requestText: requestText });
+            if (isEditMode) {
+                form.setFieldsValue(favItem);
+                favItem.maxCount ? setInputValue(favItem.maxCount) : setInputValue(25);
+            } else {
+                form.setFieldsValue({ requestText: requestText });
+            }
         }
     }, [isModalOpen]);
 
@@ -88,7 +123,7 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
                     </Form>
                 )}>
                 <Form.Item name="requestText" label="Запрос">
-                    <Input disabled />
+                    <Input disabled={!isEditMode} />
                 </Form.Item>
                 <Form.Item
                     name="title"
@@ -106,11 +141,11 @@ const FavoritesModal = ({ isModalOpen, setIsModalOpen, requestText }) => {
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="slider" label="Максимальное количество">
+                <Form.Item name="maxCount" label="Максимальное количество">
                     <Row>
                         <Col span={12}>
                             <Slider
-                                defaultValue={25}
+                                defaultValue={favItem && favItem.maxCount ? favItem.maxCount : 25}
                                 min={1}
                                 max={50}
                                 onChange={onChange}
