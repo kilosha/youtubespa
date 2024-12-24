@@ -3,19 +3,31 @@ import { Button, Layout, Menu, theme } from 'antd';
 const { Header, Content, Footer } = Layout;
 
 import slideImg1 from '../assets/react.svg';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
+// import { useLocation } from 'react-router-dom';
 
 const HeaderComponent = () => {
+    const location = useLocation();
+    const [selectedMenuKey, setSelectedMenuKey] = React.useState(location.pathname);
     const items = [
         {
-            key: 'Search',
+            key: '/',
             label: <NavLink to="/">Поиск</NavLink>
         },
         {
-            key: 'Favorites',
+            key: '/favorites',
             label: <NavLink to="/favorites">Избранное</NavLink>
         }
     ];
+
+    const onExitBtnClick = () => {
+        localStorage.removeItem('token');
+    };
+
+    // React.useEffect(() => {
+    //     setSelectedMenuKey(location.pathname);
+    // }, [location]);
+
     return (
         <Header
             style={{
@@ -32,7 +44,7 @@ const HeaderComponent = () => {
             <Menu
                 //theme="light"
                 mode="horizontal"
-                defaultSelectedKeys={['Search']}
+                defaultSelectedKeys={[selectedMenuKey]}
                 items={items}
                 style={{
                     flex: 1,
@@ -41,7 +53,9 @@ const HeaderComponent = () => {
                 }}
             />
             <Link to="/login">
-                <Button type="link">Выйти</Button>
+                <Button type="link" onClick={onExitBtnClick}>
+                    Выйти
+                </Button>
             </Link>
         </Header>
     );
